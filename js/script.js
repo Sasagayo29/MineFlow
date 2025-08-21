@@ -44,7 +44,8 @@ if (sheetIconBtn) {
 
     // Oculta o seletor se clicar fora dele
     document.addEventListener("click", (e) => {
-        if (!sheetSelector.contains(e.target) &&
+        if (
+            !sheetSelector.contains(e.target) &&
             !sheetIconBtn.contains(e.target)
         ) {
             sheetSelector.classList.remove("show");
@@ -54,7 +55,7 @@ if (sheetIconBtn) {
 
 // Função principal para carregar arquivo Excel
 function handleFileUpload(e) {
-    const fileNameSpan = document.getElementById("file-name"); // pegar span do DOM
+    const fileNameSpan = document.getElementById("file-name");
     const file = e.target.files[0];
     if (!file) return;
 
@@ -86,7 +87,7 @@ function populateSheetSelector(sheetNames) {
         option.textContent = name;
         sheetSelector.appendChild(option);
     });
-    sheetSelector.style.display = "inline-block"; // APARECE AQUI
+    sheetSelector.style.display = "inline-block";
 
     sheetSelector.onchange = () => {
         renderFlowFromSheet(sheetSelector.value);
@@ -117,7 +118,9 @@ function renderFlowFromSheet(sheetName) {
                 title,
                 description,
                 next: String(row["Próximo Direto"]).trim(),
-                emailData: emailTo ? { to: emailTo, cc: emailCC, assunto } : null,
+                emailData: emailTo
+                    ? { to: emailTo, cc: emailCC, assunto }
+                    : null,
             };
         } else if (tipo === "decisao") {
             newSteps[id] = {
@@ -127,14 +130,18 @@ function renderFlowFromSheet(sheetName) {
                     sim: String(row["Próximo Sim"]).trim(),
                     nao: String(row["Próximo Não"]).trim(),
                 },
-                emailData: emailTo ? { to: emailTo, cc: emailCC, assunto } : null,
+                emailData: emailTo
+                    ? { to: emailTo, cc: emailCC, assunto }
+                    : null,
             };
         } else if (tipo === "final") {
             newSteps[id] = {
                 title,
                 description,
                 next: null,
-                emailData: emailTo ? { to: emailTo, cc: emailCC, assunto } : null,
+                emailData: emailTo
+                    ? { to: emailTo, cc: emailCC, assunto }
+                    : null,
             };
         }
     });
@@ -168,7 +175,7 @@ function renderStep(stepKey, fromNavigation = false) {
     const oldNext = document.querySelector(".next-icon");
     if (oldNext) oldNext.remove();
 
-    // Caso especial com envio de email (verifica se tem dados de email)
+    // Caso especial com envio de email
     if (step.emailData) {
         createEmailForm(step);
     }
@@ -205,7 +212,7 @@ function renderStep(stepKey, fromNavigation = false) {
     }
 }
 
-// Função para criar formulário de email - VERSÃO CORRIGIDA
+// Função para criar formulário de email
 function createEmailForm(step) {
     const emailForm = document.createElement("div");
     emailForm.classList.add("email-form");
@@ -274,7 +281,7 @@ function getMermaidGraph() {
 
     for (const [id, step] of Object.entries(steps)) {
         const nodeId = id.replace(/\W/g, "_");
-        const label = step.title; // espaço zero width
+        const label = step.title;
 
         if (step.options) {
             nodes.push(`${nodeId}{"${label}"}`);
@@ -363,10 +370,14 @@ async function showMermaidFlow() {
       min-width: 700px;
       height: auto;
     }
-    .popup-trigger-btn {
+    .action-buttons {
       position: absolute;
       top: 30px;
       right: 30px;
+      display: flex;
+      gap: 10px;
+    }
+    .action-btn {
       padding: 10px 15px;
       background-color: #6e6251;
       color: #fff;
@@ -375,7 +386,7 @@ async function showMermaidFlow() {
       cursor: pointer;
       font-size: 1rem;
     }
-    .popup-trigger-btn:hover {
+    .action-btn:hover {
       background-color: #5d5448;
     }
     @media (max-width: 768px) {
@@ -388,13 +399,14 @@ async function showMermaidFlow() {
       svg {
         min-width: unset;
       }
-      .popup-trigger-btn {
+      .action-buttons {
         top: 15px;
         right: 15px;
+      }
+      .action-btn {
         padding: 8px 12px;
       }
     }
-    /* Estilos para o overlay do pop-up */
     .popup-overlay {
       position: fixed;
       top: 0;
@@ -407,7 +419,6 @@ async function showMermaidFlow() {
       align-items: center;
       z-index: 1000;
     }
-    /* Estilos para o contêiner principal do pop-up */
     .popup-container {
       background-color: #ffffff;
       padding: 30px;
@@ -420,7 +431,6 @@ async function showMermaidFlow() {
       display: flex;
       flex-direction: column;
     }
-    /* Estilos para o título */
     .popup-container h2 {
       margin-top: 0;
       font-size: 1.5rem;
@@ -429,7 +439,6 @@ async function showMermaidFlow() {
       padding-bottom: 10px;
       margin-bottom: 20px;
     }
-    /* Estilos para o conteúdo e os passos */
     .popup-content {
       flex-grow: 1; 
     }
@@ -457,7 +466,6 @@ async function showMermaidFlow() {
     .email-info p {
       margin: 5px 0;
     }
-    /* Estilos para o botão de fechar */
     .close-popup-btn {
       margin-top: 20px;
       padding: 10px 20px;
@@ -473,6 +481,8 @@ async function showMermaidFlow() {
       background-color: #5d5448;
     }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
   <img src="https://th.bing.com/th/id/R.7b67ecdc4d616955a56466a343aab865?rik=Xv7df86hl9VGfA&riu=http%3a%2f%2fwww.kinross.com.br%2fwp-content%2fuploads%2f2019%2f01%2fKinrossParacatuCMYK.png&ehk=UMsgtz2KvV%2fe%2fuDUC5%2f6bwzOBMQxwD4cBeT1KQbp%2bLI%3d&risl=&pid=ImgRaw&r=0"
@@ -481,76 +491,193 @@ async function showMermaidFlow() {
     <div class="card">
       <h1>Fluxo de Decisão</h1>
       ${svg}
-      <button class="popup-trigger-btn" id="popup-btn">Ver Descrições</button>
+      <div class="action-buttons">
+        <button class="action-btn" id="popup-btn">Ver Descrições</button>
+        <button class="action-btn" id="export-pdf-btn">Exportar PDF</button>
+      </div>
     </div>
   </div>
   <script>
-    const steps = ${JSON.stringify(steps)};
-    
-    function createPopup() {
-      const overlay = document.createElement('div');
-      overlay.classList.add('popup-overlay');
-
-      const popupContainer = document.createElement('div');
-      popupContainer.classList.add('popup-container');
-
-      const header = document.createElement('h2');
-      header.textContent = 'Descrições do Fluxo de Decisão';
-
-      const content = document.createElement('div');
-      content.classList.add('popup-content');
-
-      for (const key in steps) {
-        if (steps.hasOwnProperty(key)) {
-          const stepData = steps[key];
-          const stepDiv = document.createElement('div');
-          stepDiv.classList.add('step-item');
-          
-          const stepTitle = document.createElement('h3');
-          stepTitle.textContent = stepData.title;
-          
-          const stepDescription = document.createElement('p');
-          stepDescription.textContent = stepData.description;
-          
-          stepDiv.appendChild(stepTitle);
-          stepDiv.appendChild(stepDescription);
-          
-          // Adiciona informações de email se existirem
-          if (stepData.emailData) {
-            const emailInfo = document.createElement('div');
-            emailInfo.classList.add('email-info');
-            emailInfo.innerHTML = \`
-              <p><strong>Email Para:</strong> \${stepData.emailData.to}</p>
-              \${stepData.emailData.cc ? \`<p><strong>Email CC:</strong> \${stepData.emailData.cc}</p>\` : ''}
-              \${stepData.emailData.assunto ? \`<p><strong>Assunto:</strong> \${stepData.emailData.assunto}</p>\` : ''}
-            \`;
-            stepDiv.appendChild(emailInfo);
+    // Função para verificar se as bibliotecas estão carregadas
+    function checkLibrariesLoaded() {
+      return new Promise((resolve) => {
+        const check = () => {
+          if (window.jspdf && window.html2canvas) {
+            resolve();
+          } else {
+            setTimeout(check, 100);
           }
-          
-          content.appendChild(stepDiv);
+        };
+        check();
+      });
+    }
+
+    // Inicialização após carregamento das bibliotecas
+    async function initialize() {
+      try {
+        await checkLibrariesLoaded();
+        
+        const { jsPDF } = window.jspdf;
+        const steps = ${JSON.stringify(steps)};
+        
+        // Função para criar popup de descrições
+        function createPopup() {
+          const overlay = document.createElement('div');
+          overlay.classList.add('popup-overlay');
+
+          const popupContainer = document.createElement('div');
+          popupContainer.classList.add('popup-container');
+
+          const header = document.createElement('h2');
+          header.textContent = 'Descrições do Fluxo de Decisão';
+
+          const content = document.createElement('div');
+          content.classList.add('popup-content');
+
+          for (const key in steps) {
+            if (steps.hasOwnProperty(key)) {
+              const stepData = steps[key];
+              const stepDiv = document.createElement('div');
+              stepDiv.classList.add('step-item');
+              
+              const stepTitle = document.createElement('h3');
+              stepTitle.textContent = stepData.title;
+              
+              const stepDescription = document.createElement('p');
+              stepDescription.textContent = stepData.description;
+              
+              stepDiv.appendChild(stepTitle);
+              stepDiv.appendChild(stepDescription);
+              
+              if (stepData.emailData) {
+                const emailInfo = document.createElement('div');
+                emailInfo.classList.add('email-info');
+                emailInfo.innerHTML = \`
+                  <p><strong>Email Para:</strong> \${stepData.emailData.to}</p>
+                  \${stepData.emailData.cc ? \`<p><strong>Email CC:</strong> \${stepData.emailData.cc}</p>\` : ''}
+                  \${stepData.emailData.assunto ? \`<p><strong>Assunto:</strong> \${stepData.emailData.assunto}</p>\` : ''}
+                \`;
+                stepDiv.appendChild(emailInfo);
+              }
+              
+              content.appendChild(stepDiv);
+            }
+          }
+
+          const closeButton = document.createElement('button');
+          closeButton.classList.add('close-popup-btn');
+          closeButton.textContent = 'Fechar';
+          closeButton.onclick = () => {
+            document.body.removeChild(overlay);
+          };
+
+          popupContainer.appendChild(header);
+          popupContainer.appendChild(content);
+          popupContainer.appendChild(closeButton);
+          overlay.appendChild(popupContainer);
+
+          document.body.appendChild(overlay);
         }
+        
+        // Função para exportar para PDF
+        async function exportToPDF() {
+          try {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('landscape');
+            
+            // Adicionar título e data
+            pdf.setFontSize(20);
+            pdf.text('Fluxo de Decisão', 140, 20, { align: 'center' });
+            pdf.setFontSize(12);
+            const today = new Date();
+            pdf.text('Gerado em: ' + today.toLocaleDateString(), 20, 20);
+            
+            // Capturar imagem do fluxo
+            const svgElement = document.querySelector('svg');
+            const canvas = await html2canvas(svgElement.parentElement);
+            const imgData = canvas.toDataURL('image/png');
+            
+            // Adicionar imagem ao PDF
+            const imgProps = pdf.getImageProperties(imgData);
+            const pdfWidth = pdf.internal.pageSize.getWidth() - 40;
+            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+            pdf.addImage(imgData, 'PNG', 20, 30, pdfWidth, pdfHeight);
+            
+            // Adicionar descrições
+            let yPosition = 40 + pdfHeight;
+            pdf.setFontSize(16);
+            pdf.text('Descrições dos Passos:', 20, yPosition);
+            yPosition += 10;
+            
+            pdf.setFontSize(12);
+            
+            for (const key in steps) {
+              if (steps.hasOwnProperty(key)) {
+                const stepData = steps[key];
+                
+                if (yPosition > pdf.internal.pageSize.getHeight() - 50) {
+                  pdf.addPage();
+                  yPosition = 20;
+                }
+                
+                pdf.setFont('helvetica', 'bold');
+                pdf.text(stepData.title, 20, yPosition);
+                yPosition += 7;
+                
+                pdf.setFont('helvetica', 'normal');
+                const splitDesc = pdf.splitTextToSize(stepData.description, pdf.internal.pageSize.getWidth() - 40);
+                pdf.text(splitDesc, 20, yPosition);
+                yPosition += splitDesc.length * 7 + 5;
+                
+                if (stepData.emailData) {
+                  pdf.setFont('helvetica', 'bold');
+                  pdf.text('Informações de Email:', 20, yPosition);
+                  yPosition += 7;
+                  
+                  pdf.setFont('helvetica', 'normal');
+                  pdf.text('Para: ' + stepData.emailData.to, 25, yPosition);
+                  yPosition += 7;
+                  
+                  if (stepData.emailData.cc) {
+                    pdf.text('CC: ' + stepData.emailData.cc, 25, yPosition);
+                    yPosition += 7;
+                  }
+                  
+                  if (stepData.emailData.assunto) {
+                    pdf.text('Assunto: ' + stepData.emailData.assunto, 25, yPosition);
+                    yPosition += 7;
+                  }
+                  
+                  yPosition += 5;
+                }
+                
+                yPosition += 10;
+              }
+            }
+            
+            pdf.save('fluxo_decisao_' + new Date().toISOString().slice(0, 10) + '.pdf');
+          } catch (error) {
+            console.error('Erro ao gerar PDF:', error);
+            alert('Erro ao gerar PDF: ' + error.message);
+          }
+        }
+        
+        // Adicionar event listeners
+        document.getElementById('popup-btn').addEventListener('click', createPopup);
+        document.getElementById('export-pdf-btn').addEventListener('click', exportToPDF);
+        
+      } catch (error) {
+        console.error('Erro na inicialização:', error);
+        alert('Ocorreu um erro ao carregar as funcionalidades. Por favor, recarregue a página.');
       }
-
-      const closeButton = document.createElement('button');
-      closeButton.classList.add('close-popup-btn');
-      closeButton.textContent = 'Fechar';
-      closeButton.onclick = () => {
-        document.body.removeChild(overlay);
-      };
-
-      popupContainer.appendChild(header);
-      popupContainer.appendChild(content);
-      popupContainer.appendChild(closeButton);
-      overlay.appendChild(popupContainer);
-
-      document.body.appendChild(overlay);
     }
     
-    document.getElementById('popup-btn').addEventListener('click', createPopup);
+    // Iniciar quando o DOM estiver pronto
+    document.addEventListener('DOMContentLoaded', initialize);
   </script>
 </body>
 </html>
-    `;
+        `;
 
         const newWindow = window.open();
         if (newWindow) {
@@ -562,13 +689,13 @@ async function showMermaidFlow() {
             );
         }
     } catch (err) {
+        console.error("Erro ao gerar o fluxo:", err);
         alert("Erro ao gerar o fluxo: " + err.message);
     }
 }
 
 // Inicialização
 if (Object.keys(steps).length === 0) {
-    // Se não houver steps carregados (sem Excel), mostra estado inicial
     titleEl.textContent = "Fluxo de Ocorrências";
     descEl.textContent = "Selecione um arquivo Excel para começar.";
 }
