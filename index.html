@@ -1,72 +1,100 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>MineFlow</title>
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MineFlow</title>
+        <!-- Favicon -->
+        <link rel="icon" type="imge/png" href="css/img/MineFlow.svg" />
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="css/img/MineFlow.svg">
+        <link rel="stylesheet" href="css/style.css" />
+        <!-- CSS externo -->
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        />
+        <!-- Mermaid -->
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+        <!-- XLSX -->
+        <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+        <!-- Mermaid esm -->
+        <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs"></script>
+        <!-- PDF -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <!-- Canvas -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    </head>
+    <body>
+        <!-- Background -->
+        <img
+            src="css/img/background.svg"
+            alt="Decorativo"
+            class="background-svg"
+        />
 
-    <link rel="stylesheet" href="css/style.css" />
-    <!-- CSS externo -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <!-- Mermaid -->
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
-    <!-- XLSX -->
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <!-- Mermaid esm -->
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs"></script>
-</head>
+        <!-- Conteúdo principal -->
+        <main class="card">
+            <div
+                class="top-bar"
+                style="display: flex; align-items: center; gap: 1rem"
+            >
+                <img
+                    src="https://th.bing.com/th/id/R.7b67ecdc4d616955a56466a343aab865?rik=Xv7df86hl9VGfA&riu=http%3a%2f%2fwww.kinross.com.br%2fwp-content%2fuploads%2f2019%2f01%2fKinrossParacatuCMYK.png&ehk=UMsgtz2KvV%2fe%2fuDUC5%2f6bwzOBMQxwD4cBeT1KQbp%2bLI%3d&risl=&pid=ImgRaw&r=0"
+                    alt="Logo Kinross Card"
+                    class="card-logo"
+                    style="height: 48px; object-fit: contain"
+                />
 
-<body>
-    <!-- Background -->
-    <img src="css/img/background.svg" alt="Decorativo" class="background-svg" />
+                <div class="controls-container">
+                    <div class="controls-row">
+                        <div class="file-input-wrapper">
+                            <label for="excel-input" class="custom-file-label">
+                                <i class="fas fa-paperclip"></i
+                                ><span>Escolher Arquivo Excel</span>
+                            </label>
+                            <input
+                                type="file"
+                                id="excel-input"
+                                accept=".xlsx, .xls"
+                            />
+                        </div>
 
-    <!-- Conteúdo principal -->
-    <main class="card">
-        <div class="top-bar" style="display: flex; align-items: center; gap: 1rem;">
-            <img src="https://th.bing.com/th/id/R.7b67ecdc4d616955a56466a343aab865?rik=Xv7df86hl9VGfA&riu=http%3a%2f%2fwww.kinross.com.br%2fwp-content%2fuploads%2f2019%2f01%2fKinrossParacatuCMYK.png&ehk=UMsgtz2KvV%2fe%2fuDUC5%2f6bwzOBMQxwD4cBeT1KQbp%2bLI%3d&risl=&pid=ImgRaw&r=0"
-                alt="Logo Kinross Card" class="card-logo" style="height: 48px; object-fit: contain;" />
-
-            <div class="controls-container">
-                <div class="controls-row">
-                    <div class="file-input-wrapper">
-                        <label for="excel-input" class="custom-file-label">
-                <i class="fas fa-paperclip"></i><span>Escolher Arquivo Excel</span>
-              </label>
-                        <input type="file" id="excel-input" accept=".xlsx, .xls" />
+                        <select
+                            id="sheet-selector"
+                            title="Selecionar aba"
+                        ></select>
+                        <button id="sheet-icon-btn" title="Selecionar aba">
+                            <i class="fas fa-list"></i>
+                        </button>
                     </div>
 
-                    <select id="sheet-selector" title="Selecionar aba"></select>
-                    <button id="sheet-icon-btn" title="Selecionar aba">
-            </button>
+                    <span id="file-name" class="file-name"></span>
                 </div>
-
-                <span id="file-name" class="file-name"></span>
             </div>
-        </div>
 
-        <h2 id="step-title">Fluxo de Ocorrências</h2>
-        <p id="step-description">Selecione um arquivo Excel para começar.</p>
-        <div id="buttons"></div>
+            <h2 id="step-title">Fluxo de Ocorrências</h2>
+            <p id="step-description">
+                Selecione um arquivo Excel para começar.
+            </p>
+            <div id="buttons"></div>
 
-        <div class="nav-buttons">
-            <button id="reset-button" title="Início">
-          <i class="fa-solid fa-house"></i>
-        </button>
-            <button id="back-button" title="Voltar" disabled>
-          <i class="fa-solid fa-rotate-left"></i>
-        </button>
-        </div>
+            <div class="nav-buttons">
+                <button id="reset-button" title="Início">
+                    <i class="fa-solid fa-house"></i>
+                </button>
+                <button id="back-button" title="Voltar" disabled>
+                    <i class="fa-solid fa-rotate-left"></i>
+                </button>
+            </div>
 
-        <section id="flow-summary">
-            <button id="view-flow-btn" type="button" style="display: none;">Visualizar Fluxo Completo</button>
-        </section>
-    </main>
+            <section id="flow-summary">
+                <button id="view-flow-btn" type="button" style="display: none">
+                    Visualizar Fluxo Completo
+                </button>
+            </section>
+        </main>
 
-    <script src="js/script.js"></script>
-</body>
-
+        <script src="js/script.js"></script>
+    </body>
 </html>
