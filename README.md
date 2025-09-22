@@ -1,4 +1,4 @@
-# ⛏️ MineFlow
+# <img width="40" height="40" alt="MineFlow" src="https://github.com/user-attachments/assets/86409c7e-cca3-471f-89a8-d53ff6dd8024" /> MineFlow
 
 **MineFlow** é uma aplicação web interativa que transforma dados de planilhas Excel (.xlsx) em fluxos de decisão visuais e navegáveis, com suporte a lógica condicional, envio de e-mails e visualização em diagrama usando [Mermaid.js](https://mermaid-js.github.io/).
 
